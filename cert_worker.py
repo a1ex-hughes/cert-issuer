@@ -31,7 +31,7 @@ PRIVATE_KEY_FILE = "/etc/cert-issuer/pk.txt"
 def setup_conf():
     os.makedirs("/etc/cert-issuer", exist_ok=True)
     with open(PRIVATE_KEY_FILE, "w") as f:
-        f.write(ETHEREUM_PRIVATE_KEY)
+        f.write(ETHEREUM_PRIVATE_KEY.removeprefix("0x"))
     chain = f"ethereum_{NETWORK}"
     conf = (
         f"issuing_address = {ISSUING_ADDRESS}\n"
