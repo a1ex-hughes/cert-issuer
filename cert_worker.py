@@ -88,24 +88,6 @@ def build_unsigned_cert(cert):
         "issuanceDate": datetime.now(timezone.utc).isoformat(),
         "credentialSubject": {
             "id": f"mailto:{cert['recipient_email']}",
-            "name": cert["recipient_name"],
-            "achievement": {
-                "type": "Achievement",
-                "name": cert["pathway_title"],
-                "description": f"Awarded for completing the {cert['pathway_title']} pathway on Atomic.",
-                "image": "https://wstkbhwyeibttzyhrors.supabase.co/storage/v1/object/public/assets/atomic-logo.png",
-                "issuer": {
-                    "type": "Profile",
-                    "id": "https://atomic-labs.io",
-                    "name": "Atomic",
-                    "url": "https://atomic-labs.io",
-                },
-            },
-        },
-        "recipient": {
-            "identity": cert["recipient_email"],
-            "type": "email",
-            "hashed": False,
         },
     }
 
