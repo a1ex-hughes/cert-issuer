@@ -17,7 +17,6 @@ SUPABASE_FUNCTIONS_URL = os.environ["SUPABASE_FUNCTIONS_URL"]
 CERT_WORKER_SECRET = os.environ["CERT_WORKER_SECRET"]
 ETHEREUM_PRIVATE_KEY = os.environ["ETHEREUM_PRIVATE_KEY"]
 NETWORK = os.environ.get("NETWORK", "sepolia")
-ETHERSCAN_API_TOKEN = os.environ["ETHERSCAN_API_TOKEN"]
 ISSUING_ADDRESS = "0x993dc9D20EbfE5797B538Abcb9D9BF53653858Bb"
 
 HEADERS = {
@@ -135,7 +134,7 @@ def issue_certificate(cert):
                 "no_safe_mode\n"
                 f"unsigned_certificates_dir = {unsigned_dir}\n"
                 f"blockchain_certificates_dir = {blockchain_dir}\n"
-                f"etherscan_api_token = {os.environ['ETHERSCAN_API_TOKEN']}\n"
+                "sepolia_rpc_url = https://ethereum-sepolia-rpc.publicnode.com\n"
             )
 
         result = subprocess.run(
