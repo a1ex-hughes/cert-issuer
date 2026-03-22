@@ -122,13 +122,22 @@ def issue_certificate(cert):
         with open(unsigned_path, "w") as f:
             json.dump(unsigned_cert, f)
 
+        # Write a per-cert conf that includes the temp dirs
+        conf_path = os.path.join(work_dir, "conf.ini")
+        chain = f"ethereum_{NETWORK}"
+        with open(conf_path, "w") as f:
+            f.write(
+                f"issuing_address = {ISSUING_ADDRESS}\n"
+                f"chain = {chain}\n"
+                "usb_name = /etc/cert-issuer\n"
+                "key_file = pk.txt\n"
+                "no_safe_mode\n"
+                f"unsigned_certificates_dir = {unsigned_dir}\n"
+                f"blockchain_certificates_dir = {blockchain_dir}\n"
+            )
+
         result = subprocess.run(
-            [
-                "cert-issuer",
-                "-c", CERT_ISSUER_CONF,
-                "--unsigned-certificates-dir", unsigned_dir,
-                "--blockchain-certificates-dir", blockchain_dir,
-            ],
+            ["cert-issuer", "-c", conf_path],
             capture_output=True,
             text=True,
             timeout=120,
