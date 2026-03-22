@@ -82,7 +82,7 @@ def build_unsigned_cert(cert):
             "https://w3id.org/blockcerts/schema/3.0/context.json",
         ],
         "type": ["VerifiableCredential", "BlockcertsCredential"],
-        "id": f"urn:uuid:{cert['certificate_id']}",
+        "id": f"urn:uuid:{cert['id']}",
         "issuer": "https://atomic-labs.io",
         "issuedOn": datetime.now(timezone.utc).isoformat(),
         "recipient": {
