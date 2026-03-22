@@ -36,7 +36,8 @@ def setup_conf():
     conf = (
         f"issuing_address = {ISSUING_ADDRESS}\n"
         f"chain = {chain}\n"
-        f"key_file = {PRIVATE_KEY_FILE}\n"
+        "usb_name = /etc/cert-issuer\n"
+        "key_file = pk.txt\n"
         "no_safe_mode\n"
     )
     with open(CERT_ISSUER_CONF, "w") as f:
