@@ -46,7 +46,7 @@ def setup_conf():
 def fetch_pending():
     r = requests.get(f"{SUPABASE_FUNCTIONS_URL}/cert-queue", headers=HEADERS)
     r.raise_for_status()
-    return r.json()
+    return r.json().get("certificates", [])
 
 
 def report_anchored(certificate_id, tx_id, blockcert_json):
@@ -95,7 +95,7 @@ def build_unsigned_cert(cert):
             "id": f"urn:uuid:{uuid.uuid4()}",
             "name": cert["pathway_title"],
             "description": f"Awarded for completing the {cert['pathway_title']} pathway on Atomic.",
-            "image": "https://eqymonqcryymzqztzyhd.supabase.co/storage/v1/object/public/assets/atomic-logo.png",
+            "image": "https://wstkbhwyeibttzyhrors.supabase.co/storage/v1/object/public/assets/atomic-logo.png",
             "issuer": {
                 "type": "Profile",
                 "id": "https://atomic-labs.io",
@@ -114,7 +114,7 @@ def issue_certificate(cert):
         os.makedirs(unsigned_dir)
         os.makedirs(blockchain_dir)
 
-        cert_id = cert["certificate_id"]
+        cert_id = cert["id"]
         unsigned_cert = build_unsigned_cert(cert)
 
         unsigned_path = os.path.join(unsigned_dir, f"{cert_id}.json")
@@ -160,7 +160,7 @@ def main():
     print(f"Found {len(pending)} pending certificate(s)")
 
     for cert in pending:
-        cert_id = cert["certificate_id"]
+        cert_id = cert["id"]
         print(f"Processing {cert_id} — {cert.get('recipient_name')} / {cert.get('pathway_title')}")
         try:
             tx_id, blockcert = issue_certificate(cert)
