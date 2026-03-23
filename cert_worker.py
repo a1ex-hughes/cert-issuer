@@ -39,7 +39,7 @@ def load_config():
 def setup_conf(cfg):
     os.makedirs("/etc/cert-issuer", exist_ok=True)
     with open(PRIVATE_KEY_FILE, "w") as f:
-        f.write(cfg["ETHEREUM_PRIVATE_KEY"].removeprefix("0x"))
+        f.write(cfg["ETHEREUM_PRIVATE_KEY"].strip().removeprefix("0x").strip())
     chain = f"ethereum_{cfg['NETWORK']}"
     conf = (
         f"issuing_address = {ISSUING_ADDRESS}\n"
@@ -184,6 +184,9 @@ def main():
     print(f"[{datetime.now().isoformat()}] cert_worker starting")
     cfg = load_config()
     print(f"Config loaded — network: {cfg['NETWORK']}, supabase: {cfg['SUPABASE_FUNCTIONS_URL']}")
+    from eth_account import Account
+    derived = Account.from_key(cfg["ETHEREUM_PRIVATE_KEY"].strip().removeprefix("0x").strip()).address
+    print(f"Derived wallet address: {derived}")
 
     setup_conf(cfg)
     pending, headers = fetch_pending(cfg)
