@@ -17,7 +17,7 @@ from cert_issuer.models import ServiceProviderConnector
 from cert_issuer.errors import BroadcastError
 
 BROADCAST_RETRY_INTERVAL = 30
-MAX_BROADCAST_ATTEMPTS = 3
+MAX_BROADCAST_ATTEMPTS = 1
 
 
 class EthereumServiceProviderConnector(ServiceProviderConnector):
