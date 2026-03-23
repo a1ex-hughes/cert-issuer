@@ -156,7 +156,7 @@ def issue_certificate(cert, cfg):
             ["cert-issuer", "-c", conf_path],
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=300,
         )
 
         if result.returncode != 0:
