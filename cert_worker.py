@@ -149,7 +149,7 @@ def issue_certificate(cert, cfg):
                 "no_safe_mode\n"
                 f"unsigned_certificates_dir = {unsigned_dir}\n"
                 f"blockchain_certificates_dir = {blockchain_dir}\n"
-                "sepolia_rpc_url = https://rpc.ankr.com/eth_sepolia\n"
+                "sepolia_rpc_url = https://sepolia.drpc.org\n"
             )
 
         try:

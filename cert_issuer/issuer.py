@@ -5,7 +5,7 @@ import logging
 
 from cert_issuer.errors import BroadcastError
 
-MAX_TX_RETRIES = 5
+MAX_TX_RETRIES = 1
 
 
 class Issuer:
