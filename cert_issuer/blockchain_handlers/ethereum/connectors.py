@@ -65,7 +65,8 @@ class EthereumServiceProviderConnector(ServiceProviderConnector):
         if getattr(app_config, 'sepolia_rpc_url', None):
             self.sepolia_rpc_url = app_config.sepolia_rpc_url
             sep_provider_list.append(EthereumRPCProvider(self.sepolia_rpc_url))
-        sep_provider_list.append(EtherscanBroadcaster(self.get_etherscan_api_endpoint_for_chain('sepolia'), etherscan_api_token))
+        if etherscan_api_token:
+            sep_provider_list.append(EtherscanBroadcaster(self.get_etherscan_api_endpoint_for_chain('sepolia'), etherscan_api_token))
         self.connectors[Chain.ethereum_sepolia] = sep_provider_list
 
     def get_etherscan_api_endpoint_for_chain(self, chain):
