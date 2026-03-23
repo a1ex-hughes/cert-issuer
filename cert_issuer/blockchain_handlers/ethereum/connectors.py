@@ -163,7 +163,7 @@ class EthereumRPCProvider(object):
     def __init__(self, ethereum_url):
         self.ethereum_url = ethereum_url
         logging.info(f'Setting up a new RPC provider for Ethereum at url: {ethereum_url}')
-        self.w3 = Web3(HTTPProvider(ethereum_url))
+        self.w3 = Web3(HTTPProvider(ethereum_url, request_kwargs={'timeout': 30}))
 
     def broadcast_tx(self, tx):
         logging.info('Broadcasting transaction with EthereumRPCProvider')
@@ -197,7 +197,7 @@ class EtherscanBroadcaster(object):
         headers = {
             'User-Agent': 'Python-urllib/3.8'
         }
-        response = requests.request(method, url, data=data, headers=headers)
+        response = requests.request(method, url, data=data, headers=headers, timeout=30)
         return response
 
     def broadcast_tx(self, tx):
