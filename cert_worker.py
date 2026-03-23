@@ -21,7 +21,7 @@ PRIVATE_KEY_FILE = "/etc/cert-issuer/pk.txt"
 
 def load_config():
     """Load and validate required env vars, printing a clear diagnostic on failure."""
-    required = ["SUPABASE_FUNCTIONS_URL", "CERT_WORKER_SECRET", "ETHEREUM_PRIVATE_KEY"]
+    required = ["SUPABASE_FUNCTIONS_URL", "CERT_WORKER_SECRET", "ETHEREUM_PRIVATE_KEY", "SEPOLIA_RPC_URL"]
     missing = [k for k in required if not os.environ.get(k)]
     if missing:
         print(f"ERROR: Missing required env vars: {', '.join(missing)}")
@@ -32,6 +32,7 @@ def load_config():
         "CERT_WORKER_SECRET": os.environ["CERT_WORKER_SECRET"],
         "ETHEREUM_PRIVATE_KEY": os.environ["ETHEREUM_PRIVATE_KEY"],
         "NETWORK": os.environ.get("NETWORK", "sepolia"),
+        "SEPOLIA_RPC_URL": os.environ["SEPOLIA_RPC_URL"],
     }
 
 
@@ -149,7 +150,7 @@ def issue_certificate(cert, cfg):
                 "no_safe_mode\n"
                 f"unsigned_certificates_dir = {unsigned_dir}\n"
                 f"blockchain_certificates_dir = {blockchain_dir}\n"
-                "sepolia_rpc_url = https://sepolia.drpc.org\n"
+                f"sepolia_rpc_url = {cfg['SEPOLIA_RPC_URL']}\n"
             )
 
         try:
