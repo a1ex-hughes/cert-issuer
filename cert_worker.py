@@ -6,12 +6,12 @@ Fetches pending certs from Supabase, issues via cert-issuer CLI, reports back.
 
 import os
 import json
-import uuid
 import shutil
 import subprocess
 import tempfile
 import requests
 from datetime import datetime, timezone
+from lds_merkle_proof_2019.merkle_proof_2019 import MerkleProof2019
 
 SUPABASE_FUNCTIONS_URL = os.environ["SUPABASE_FUNCTIONS_URL"]
 CERT_WORKER_SECRET = os.environ["CERT_WORKER_SECRET"]
@@ -92,6 +92,29 @@ def build_unsigned_cert(cert):
     }
 
 
+def extract_tx_id(blockcert):
+    """Extract the blockchain tx hash from a Blockcerts v3 issued certificate.
+
+    The tx is embedded in proof.proofValue as a CBOR+multibase encoded MerkleProof2019.
+    The anchor string looks like 'blink:eth:sepolia:0xabc123...'
+    """
+    proof = blockcert.get("proof", {})
+    if isinstance(proof, list):
+        proof = next((p for p in proof if p.get("cryptosuite") == "merkle-proof-2019"), {})
+    proof_value = proof.get("proofValue")
+    if not proof_value:
+        return None
+    try:
+        decoded = MerkleProof2019().decode(proof_value)
+        anchors = decoded.get("anchors", [])
+        if anchors:
+            # anchor format: "blink:eth:sepolia:0xTXHASH"
+            return anchors[0].split(":")[-1]
+    except Exception as e:
+        print(f"Failed to decode proofValue: {e}")
+    return None
+
+
 def issue_certificate(cert):
     work_dir = tempfile.mkdtemp()
     try:
@@ -137,11 +160,7 @@ def issue_certificate(cert):
         with open(issued_path) as f:
             blockcert = json.load(f)
 
-        tx_id = (
-            blockcert.get("signature", {})
-            .get("anchors", [{}])[0]
-            .get("sourceId")
-        )
+        tx_id = extract_tx_id(blockcert)
 
         return tx_id, blockcert
 
