@@ -11,9 +11,9 @@ COPY . /cert-issuer
 WORKDIR /cert-issuer
 
 RUN pip install --upgrade pip setuptools wheel Cython && \
-    pip install /cert-issuer/. && \
-    pip install -r /cert-issuer/ethereum_requirements.txt && \
-    pip install requests
+    pip install --no-cache-dir /cert-issuer/. && \
+    pip install --no-cache-dir -r /cert-issuer/ethereum_requirements.txt && \
+    pip install --no-cache-dir requests
 
 COPY cert_worker.py /cert_worker.py
 

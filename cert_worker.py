@@ -152,12 +152,16 @@ def issue_certificate(cert, cfg):
                 "sepolia_rpc_url = https://rpc.ankr.com/eth_sepolia\n"
             )
 
-        result = subprocess.run(
-            ["cert-issuer", "-c", conf_path],
-            capture_output=True,
-            text=True,
-            timeout=300,
-        )
+        try:
+            result = subprocess.run(
+                ["cert-issuer", "-c", conf_path],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+        except subprocess.TimeoutExpired as e:
+            print(f"[{cert_id}] cert-issuer timed out. Last output:\n{(e.stderr or b'').decode()[-3000:]}")
+            raise
 
         if result.returncode != 0:
             print(f"[{cert_id}] cert-issuer failed:\n{result.stderr}")
