@@ -165,18 +165,27 @@ class EthereumRPCProvider(object):
         logging.info(f'Setting up a new RPC provider for Ethereum at url: {ethereum_url}')
         self.w3 = Web3(HTTPProvider(ethereum_url, request_kwargs={'timeout': 30}))
 
+    def _rpc(self, method, params):
+        payload = {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
+        response = requests.post(self.ethereum_url, json=payload, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        if 'error' in data:
+            raise BroadcastError(data['error'])
+        return data.get('result')
+
     def broadcast_tx(self, tx):
         logging.info('Broadcasting transaction with EthereumRPCProvider')
-        response = self.w3.eth.sendRawTransaction(tx).hex()
-        return response
+        return self._rpc('eth_sendRawTransaction', [tx])
 
     def get_balance(self, address):
         """
         Returns the balance in Wei.
         """
-        response = self.w3.eth.get_balance(account=address, block_identifier="latest")
-        logging.info('Getting balance with EthereumRPCProvider: %s', response)
-        return response
+        result = self._rpc('eth_getBalance', [address, 'latest'])
+        balance = int(result, 16)
+        logging.info('Getting balance with EthereumRPCProvider: %s', balance)
+        return balance
 
     def get_address_nonce(self, address):
         """
@@ -184,8 +193,8 @@ class EthereumRPCProvider(object):
         Necessary for the transaction creation.
         """
         logging.info('Fetching nonce with EthereumRPCProvider')
-        response = self.w3.eth.getTransactionCount(address, "pending")
-        return response
+        result = self._rpc('eth_getTransactionCount', [address, 'pending'])
+        return int(result, 16)
 
 
 class EtherscanBroadcaster(object):
