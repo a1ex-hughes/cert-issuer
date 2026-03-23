@@ -151,6 +151,7 @@ def issue_certificate(cert, cfg):
                 f"unsigned_certificates_dir = {unsigned_dir}\n"
                 f"blockchain_certificates_dir = {blockchain_dir}\n"
                 f"{'sepolia_rpc_url' if cfg['NETWORK'] == 'sepolia' else 'ethereum_rpc_url'} = {cfg['ETHEREUM_RPC_URL']}\n"
+                "gas_price_dynamic = True\n"
             )
 
         try:
